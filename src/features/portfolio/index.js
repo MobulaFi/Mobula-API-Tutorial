@@ -10,6 +10,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { fetchWalletHistoryBalance } from "mobulalib/wrappers/apiWrapper";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { isAddress } from "viem";
@@ -23,12 +24,11 @@ const EChart = dynamic(() => import("../../components/charts"), {
 });
 
 export const Portfolio = () => {
-  const [portfolio, setPortfolio] = useState<any[]>([]);
-  const [balanceHistory, setBalanceHistory] = useState<any[]>([]);
+  const [portfolio, setPortfolio] = useState([]);
+  const [balanceHistory, setBalanceHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userAddress, setUserAddress] = useState<string>(
-    "0x77A89C51f106D6cD547542a3A83FE73cB4459135"
-  );
+  const [userAddress, setUserAddress] =
+    useState < string > "0x77A89C51f106D6cD547542a3A83FE73cB4459135";
 
   const portfolioUrlAPI = "https://api.app-mobula.com/api/1/wallet/portfolio";
   const historyUrlAPI = "https://api.app-mobula.com/api/1/wallet/history";
@@ -42,15 +42,24 @@ export const Portfolio = () => {
         setPortfolio(res.data);
       });
 
-    fetch(`${historyUrlAPI}?wallet=${userAddress}`, options)
-      .then((res) => res.json())
-      .then((res) => {
-        setBalanceHistory(res.data);
-        setIsLoading(false);
-      });
+    // .then((res) => res.json())
+    // .then((res) => {
+    //   setBalanceHistory(res.data);
+    //   setIsLoading(false);
+    // });
 
     if (balanceHistory?.balance_history) return;
   };
+
+  const fdp = async () => {
+    const historyParams = {
+      wallet: userAddress,
+    };
+    const test = await fetchWalletHistoryBalance(historyParams);
+    console.log(test);
+  };
+
+  fdp();
 
   useEffect(() => {
     fetchData();
