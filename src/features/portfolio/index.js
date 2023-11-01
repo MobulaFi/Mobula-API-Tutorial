@@ -10,12 +10,12 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { fetchWalletHistoryBalance } from "mobulalib/wrappers/apiWrapper";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { isAddress } from "viem";
+import { Mobula } from "../../../node_modules/mobula-api-sdk/apiWrapper_2";
 import { Container } from "../../components/container";
-import { MediumFont, SmallFont } from "../../components/fonts";
+import { SmallFont } from "../../components/fonts";
 import { TitleFont } from "../../components/fonts/title";
 import { Inputs } from "../../components/inputs";
 
@@ -27,39 +27,34 @@ export const Portfolio = () => {
   const [portfolio, setPortfolio] = useState([]);
   const [balanceHistory, setBalanceHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userAddress, setUserAddress] =
-    useState < string > "0x77A89C51f106D6cD547542a3A83FE73cB4459135";
-
-  const portfolioUrlAPI = "https://api.app-mobula.com/api/1/wallet/portfolio";
-  const historyUrlAPI = "https://api.app-mobula.com/api/1/wallet/history";
+  const [userAddress, setUserAddress] = useState(
+    "0x77A89C51f106D6cD547542a3A83FE73cB4459135"
+  );
+  const mobula = new Mobula();
 
   const fetchData = () => {
-    setIsLoading(true);
-    const options = { method: "GET", headers: { accept: "application/json" } };
-    fetch(`${portfolioUrlAPI}?wallet=${userAddress}`, options)
-      .then((res) => res.json())
-      .then((res) => {
-        setPortfolio(res.data);
+    if (userAddress) {
+      mobula
+        .fetchWalletHistoryBalance({
+          wallet: userAddress,
+        })
+        .then((res) => {
+          if (res.body) {
+            const r = JSON.parse(res.body);
+            setBalanceHistory(r.data);
+          }
+          setIsLoading(false);
+        });
+
+      mobula.fetchWalletHoldings({ wallet: userAddress }).then((res) => {
+        if (res.body) {
+          const r = JSON.parse(res.body);
+          console.log(r);
+          setPortfolio(r.data);
+        }
       });
-
-    // .then((res) => res.json())
-    // .then((res) => {
-    //   setBalanceHistory(res.data);
-    //   setIsLoading(false);
-    // });
-
-    if (balanceHistory?.balance_history) return;
+    }
   };
-
-  const fdp = async () => {
-    const historyParams = {
-      wallet: userAddress,
-    };
-    const test = await fetchWalletHistoryBalance(historyParams);
-    console.log(test);
-  };
-
-  fdp();
 
   useEffect(() => {
     fetchData();
@@ -106,18 +101,18 @@ export const Portfolio = () => {
       >
         <Flex align="center" justify="space-between" w="100%" mb="-30px">
           <Flex align="center">
-            <MediumFont color="rgba(255,255,255,0.6)" mr="10px">
+            <SmallFont color="rgba(255,255,255,0.6)" mr="10px">
               Balance:{" "}
-            </MediumFont>
-            <MediumFont>
+            </SmallFont>
+            <SmallFont>
               {portfolio?.total_wallet_balance?.toFixed(2)} USD
-            </MediumFont>
+            </SmallFont>
           </Flex>
-          <MediumFont>
+          <SmallFont>
             {userAddress?.slice(0, 6) +
               "..." +
               userAddress?.slice(userAddress?.length - 6, userAddress?.length)}
-          </MediumFont>
+          </SmallFont>
         </Flex>
         {!isLoading ? (
           <EChart
@@ -198,10 +193,11 @@ export const Portfolio = () => {
                         borderRadius="full"
                         alt={asset?.asset?.name}
                         mr="7.5px"
+                        mb="0px"
                       />
-                      <Flex direction="column">
-                        <MediumFont>{asset?.asset?.symbol}</MediumFont>
-                        <SmallFont color="rgba(255,255,255,0.6)">
+                      <Flex direction="column" justify="center" h="100%">
+                        <SmallFont mb="0px">{asset?.asset?.symbol}</SmallFont>
+                        <SmallFont mb="0px" color="rgba(255,255,255,0.6)">
                           {asset?.asset?.name}
                         </SmallFont>
                       </Flex>
@@ -209,23 +205,23 @@ export const Portfolio = () => {
                   </Td>
                   <Td borderBottom="1px solid rgba(255,255,255,0.05)">
                     {" "}
-                    <MediumFont>
+                    <SmallFont>
                       ${asset?.estimated_balance?.toFixed(2)}
-                    </MediumFont>
+                    </SmallFont>
                   </Td>
                   <Td borderBottom="1px solid rgba(255,255,255,0.05)">
                     {" "}
-                    <MediumFont>
+                    <SmallFont>
                       {asset?.token_balance?.toFixed(2) +
                         " " +
                         asset?.asset?.symbol}{" "}
-                    </MediumFont>
+                    </SmallFont>
                   </Td>
                   <Td borderBottom="1px solid rgba(255,255,255,0.05)">
-                    <MediumFont>${asset?.price_bought?.toFixed(2)}</MediumFont>
+                    <SmallFont>${asset?.price_bought?.toFixed(2)}</SmallFont>
                   </Td>
                   <Td borderBottom="1px solid rgba(255,255,255,0.05)" isNumeric>
-                    <MediumFont>${asset?.price?.toFixed(2)}</MediumFont>
+                    <SmallFont>${asset?.price?.toFixed(2)}</SmallFont>
                   </Td>
                 </Tr>
               ))}

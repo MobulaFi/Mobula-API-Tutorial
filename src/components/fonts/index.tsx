@@ -13,6 +13,7 @@ export const SmallFont: React.FC<FontProps> = ({
     <Text
       fontSize={["12px", "12px", "13px", "14px"]}
       color="white"
+      mb="0px"
       fontWeight="500"
       {...props}
     >
@@ -29,6 +30,7 @@ export const MediumFont: React.FC<FontProps> = ({
     <Text
       fontSize={["14px", "14px", "15px", "16px"]}
       color="white"
+      mb="0px"
       fontWeight="500"
       {...props}
     >
