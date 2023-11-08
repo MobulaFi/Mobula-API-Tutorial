@@ -1,3 +1,5 @@
+import { TimeSelected } from "../interfaces/chart";
+
 export const getTimeStampFromTimeFrame = (timeFrame: TimeSelected) => {
   switch (timeFrame) {
     case "24H":

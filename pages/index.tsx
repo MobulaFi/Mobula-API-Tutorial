@@ -1,10 +1,11 @@
+import { Portfolio } from "../src/features/portfolio";
 import { CustomHead } from "../src/layouts/head";
 
-const IndexPage = () => (
-  <>
-    <CustomHead title="Mobula API Tutorial" />
-    <h1>Main Page</h1>
-  </>
-);
-
-export default IndexPage;
+export default function portfolioPage() {
+  return (
+    <>
+      <CustomHead title="Portfolio | Mobula API Tutorial" />
+      <Portfolio />
+    </>
+  );
+}

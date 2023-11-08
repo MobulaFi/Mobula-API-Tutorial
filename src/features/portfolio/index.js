@@ -10,10 +10,10 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { Mobula } from "mobula-api-sdk/dist/cjs/apiWrapper_2";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { isAddress } from "viem";
-import { Mobula } from "../../../node_modules/mobula-api-sdk/apiWrapper_2";
 import { Container } from "../../components/container";
 import { SmallFont } from "../../components/fonts";
 import { TitleFont } from "../../components/fonts/title";
